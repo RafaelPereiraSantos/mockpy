@@ -6,7 +6,7 @@ A simple mock to respond the signup-api-service
  - python3 with Flask
 
 ## to start it up
-´´´python3 main.pay´´´
+```python3 main.pay```
 
 ## TODO
  - use dotenv to define some values
