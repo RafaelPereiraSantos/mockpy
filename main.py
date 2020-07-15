@@ -12,7 +12,6 @@ def eligible_api():
         return make_response(
           error_message_format("param.none_given"), 400
         )
-
     fake_email = "teste@teste.company.com"
     fake_employee_id = "abc123"
     fake_document = "1234567890"
@@ -20,6 +19,7 @@ def eligible_api():
     if email != fake_email and employee_id != fake_employee_id and document != fake_document:
         return make_response(error_message_format("eligiblity.not_found"), 404)
 
+    print(email)
     return jsonify(
       email_address = fake_email,
       employee_id = fake_employee_id,
@@ -117,8 +117,8 @@ def core_company_members():
 
     return jsonify(
       email_address = fake_email,
-      token = fake_employee_id,
-      cpf = fake_document,
+      token = fake_company_member_token,
+      cpf = fake_cpf,
       company_id = 1
     )
 
