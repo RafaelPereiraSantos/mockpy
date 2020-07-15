@@ -19,7 +19,6 @@ def eligible_api():
     if email != fake_email and employee_id != fake_employee_id and document != fake_document:
         return make_response(error_message_format("eligiblity.not_found"), 404)
 
-    print(email)
     return jsonify(
       email_address = fake_email,
       employee_id = fake_employee_id,
