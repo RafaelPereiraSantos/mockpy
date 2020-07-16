@@ -5,8 +5,12 @@ A simple mock to respond the signup-api-service
 ## dependences
  - python3 with Flask
 
-## to start it up
-```python3 main.pay```
+## first of all:
+Install all dependences by running:
+```make init```
+
+## to start the server, run:
+```make start```
 
 ## TODO
  - use dotenv to define some values
