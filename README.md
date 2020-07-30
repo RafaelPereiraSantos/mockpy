@@ -5,10 +5,10 @@ A simple mock to respond the signup-api-service
 ## dependences
 All required libs can be found inside the file ```requirements.txt``` in the root of the project  
 To install them, just run:  
-```make init```
+```make install```
 
 ## How to start the mock-service?
-```make start```
+```make run```
 
 ## How to create my mock?
 Go inside the folder resources, and create jsons with your routes following the layout of ```dummy_payload.json```,

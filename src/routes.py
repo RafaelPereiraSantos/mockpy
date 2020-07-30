@@ -7,6 +7,7 @@ def eligible_api():
     employee_id = request.args.get('employee_id')
     document = request.args.get('document')
 
+
     if email is None and employee_id is None and document is None:
         return make_response(
           error_message_format("param.none_given"), 400
@@ -22,6 +23,31 @@ def eligible_api():
       email_address = fake_email,
       employee_id = fake_employee_id,
       document = fake_document,
+      company_id = 1
+    )
+
+@app.route('/company-members', methods = ['GET'])
+def core_company_members():
+    email = request.args.get('email_address')
+    company_member_token = request.args.get('company_member_token')
+    cpf = request.args.get('personal_document')
+
+    if email is None and company_member_token is None and cpf is None:
+        return make_response(
+          error_message_format("param.none_given"), 400
+        )
+
+    fake_email = "teste@teste.company.com"
+    fake_company_member_token = "abc123"
+    fake_cpf = "1234567890"
+
+    if email != fake_email and company_member_token != fake_company_member_token and fake_cpf != cpf:
+        return make_response(error_message_format("company_member.not_found"), 404)
+
+    return jsonify(
+      email_address = fake_email,
+      token = fake_company_member_token,
+      cpf = fake_cpf,
       company_id = 1
     )
 
@@ -94,31 +120,6 @@ def core_asssociate():
             }
           })
       )
-
-@app.route('/company-members', methods = ['GET'])
-def core_company_members():
-    email = request.args.get('email_address')
-    company_member_token = request.args.get('company_member_token')
-    cpf = request.args.get('personal_document')
-
-    if email is None and company_member_token is None and cpf is None:
-        return make_response(
-          error_message_format("param.none_given"), 400
-        )
-
-    fake_email = "teste@teste.company.com"
-    fake_company_member_token = "abc123"
-    fake_cpf = "1234567890"
-
-    if email != fake_email and company_member_token != fake_company_member_token and fake_cpf != cpf:
-        return make_response(error_message_format("company_member.not_found"), 404)
-
-    return jsonify(
-      email_address = fake_email,
-      token = fake_company_member_token,
-      cpf = fake_cpf,
-      company_id = 1
-    )
 
 def error_message_format(key):
     return jsonify({
