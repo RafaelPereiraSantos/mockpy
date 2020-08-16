@@ -1,6 +1,7 @@
 from . import app
 from flask import make_response, request
 from .models.route_manager import RouteManager
+from .models.route_data import RouteData
 
 manager = RouteManager()
 
@@ -20,6 +21,13 @@ def route_by_name(route_path):
 
 @app.route('/route', methods=['POST'])
 def create_route():
+    body = request.json
+
+    try:
+        RouteData(body)
+    except TypeError as e:
+        return str(e)
+
     manager.reload()
     return "route created"
 
