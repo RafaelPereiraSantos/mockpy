@@ -23,7 +23,7 @@ def route_by_name(route_path):
 def create_route():
     body = request.json
 
-    errors = validate_route_params(body)
+    errors = validate_route_creation_params(body)
 
     if len(errors) > 0:
         return make_response(format_error_messages(errors), 400)
@@ -48,7 +48,7 @@ def create_route():
         return str(e)
 
     # manager.reload()
-    return "route created"
+    return make_response('', 201)
 
 @app.route("/route/<route_name>", methods=['DELETE'])
 def delete_route_by_name(route_name):
@@ -71,7 +71,7 @@ def not_a_mock(path):
     route_data = manager.route_not_found()
     return make_response(route_data.response_payload, route_data.response_code)
 
-def validate_route_params(body):
+def validate_route_creation_params(body):
     mandatory_params = ['path', 'method', 'response_payload', 'response_code']
     errors = []
     for param_name in mandatory_params:
