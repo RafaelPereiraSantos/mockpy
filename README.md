@@ -23,7 +23,7 @@ This applicaiton already contains a docker file and a set of ```make``` commands
 ```make build-image``` or ```docker build -t mockpy .```
 
 ### How to run a new container
-```maker run-in-docker``` or ```docker run --rm -p 3001:3001 -e OPEN_BROWSER_ON_START='no' -v mockpy:/app/resources --name mockpy_instance -d mockpy```
+```maker run-in-docker``` or ```docker run --rm -p 3001:3001 -e OPEN_BROWSER_ON_START='no' -v mockpy:/usr/src/app/resources --name mockpy_instance -d mockpy```
 
 ### How to stop the container
 ```make stop-container``` or ```docker stop mockpy_instance```
