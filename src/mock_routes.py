@@ -12,7 +12,9 @@ def all_routes():
 
 @app.route('/route/<route_path>', methods=['GET'])
 def route_by_name(route_path):
-    response_payload = manager.raw_route("/" + route_path)
+    if not(manager.route_exists(route_path)):
+        return route_not_found_error()
+    response_payload = manager.raw_route(route_path)
     return make_response(response_payload, 200)
 
 @app.route('/route', methods=['POST'])
@@ -22,26 +24,29 @@ def create_route():
     errors = validate_route_creation_params(body)
 
     if len(errors) > 0:
-        return make_response(format_error_messages(errors), 400)
+        missing_parameters = ", ".join(errors)
+        return error_message("missing parameters: [" + missing_parameters + "]" )
 
     path = body['path']
 
-    if manager.has_route(path):
-        return make_response(format_error_message('path already used for another route'), 400)
+    if manager.has_route(path[1:]):
+        return route_already_exist_error()
 
     method = body['method']
     valid_methods = ['GET', 'POST', 'PUT', 'DELETE']
 
     if not(method in valid_methods):
-        return make_response(format_error_message("invalid parameter 'method'"), 400)
+        return invalid_method_error()
 
     response_payload = body['response_payload']
     response_code = body['response_code']
 
+
     try:
         manager.add_route_with_args(path, method, response_payload, response_code, True)
-    except TypeError as e:
-        return str(e)
+    except Exception as e:
+        print("Error: " + str(e))
+        return error_message("oopsy, something really wrong just happend", 500)
 
     # manager.reload()
     return make_response('', 201)
@@ -49,7 +54,7 @@ def create_route():
 @app.route("/route/<route_name>", methods=['DELETE'])
 def delete_route_by_name(route_name):
     if not(manager.has_route(route_name)):
-        return make_response('route not found', 404)
+        return route_not_found_error()
     manager.remove_route(route_name)
     # manager.reload()
     return make_response('', 204)
@@ -67,15 +72,21 @@ def not_a_mock(path):
 
 def validate_route_creation_params(body):
     mandatory_params = ['path', 'method', 'response_payload', 'response_code']
-    errors = []
+    missing_parameters_list = []
     for param_name in mandatory_params:
-        if not(param_name in body):
-            errors.append(f'missing parameter: {param_name  }')
-    return errors
+        if not(param_name in body.keys()):
+            missing_parameters_list.append(param_name)
+    return missing_parameters_list
 
-def format_error_message(error):
-    return format_error_messages([error])
+def route_not_found_error():
+    return error_message('route does not exist', 404)
 
-def format_error_messages(errors):
-    return { 'errors': errors }
+def route_already_exist_error():
+    return error_message('route already exist', 409)
+
+def invalid_method_error():
+    return error_message('invalid HTTP method for route')
+
+def error_message(message, status_code=400):
+    return make_response({ 'message': message }, status_code)
 

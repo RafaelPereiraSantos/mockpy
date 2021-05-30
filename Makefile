@@ -6,7 +6,7 @@ run:
 build-image:
 	docker build -t mockpy .
 run-in-docker:
-	docker run --rm -p 3001:3001 -e OPEN_BROWSER_ON_START='no' -v mockpy:/app/resources --name mockpy_instance -d mockpy
+	docker run --rm -p 3001:3001 -e OPEN_BROWSER_ON_START='no' -v mockpy:/usr/src/app/resources --name mockpy_instance -d mockpy
 stop-container:
 	docker stop mockpy_instance
 
