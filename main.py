@@ -7,7 +7,7 @@ load_dotenv()
 
 if __name__ == "__main__":
     debugging = os.getenv("ENVRIOMENT") == "development"
-    print(debugging)
-    if not debugging:
-      webbrowser.open('http://localhost:' + os.getenv("PORT") + "hi_there")
-    app.run(port=os.getenv("PORT"), debug=debugging)
+    open_browser = os.getenv("OPEN_BROWSER_ON_START") != "no"
+    if not debugging and open_browser:
+      webbrowser.open('http://localhost:' + os.getenv("PORT") + "/wellcome")
+    app.run(host=os.getenv("HOST"), port=os.getenv("PORT"), debug=debugging)
