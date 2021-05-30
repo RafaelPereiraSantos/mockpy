@@ -1,4 +1,6 @@
 .LICENCE
 README.md
 resources/*
+!resources/dummy_payload.json
 .gitignore
+.dockerignore

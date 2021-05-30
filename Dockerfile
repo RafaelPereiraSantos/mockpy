@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:3-alpine
 
 WORKDIR /usr/src/app
 
@@ -8,5 +8,6 @@ COPY . .
 RUN cp .env-template .env
 
 EXPOSE 3001:3001
+
 
 CMD [ "python3", "./main.py" ]
