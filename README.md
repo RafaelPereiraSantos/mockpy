@@ -11,7 +11,7 @@ With python on your machine, install all dependecies running:
 ```make install``` or ```python3 -m pip install --upgrade -r requirements.txt```
 
 
-NOTE: All the commands bellow must be run inside the project's root if not said otherwise
+**NOTE**: All the commands bellow must be run inside the project's root if not said otherwise
 
 ## How to start the service?
 ```make run``` or ```python3 main.py```
