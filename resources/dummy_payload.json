@@ -1,6 +1,6 @@
 {
-  "route": "/404",
+  "path": "/404",
   "method": "GET",
-  "response_payload": "This is not a mock, you probably did something wrong",
-  "code_status":400
+  "response_payload": {"message" : "This is not a mock, you probably did something wrong"},
+  "response_code": 404
 }

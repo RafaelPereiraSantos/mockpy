@@ -28,9 +28,8 @@ This applicaiton already contains a docker file and a set of ```make``` commands
 ### How to stop the container
 ```make stop-container``` or ```docker stop mockpy_instance```
 
-## How to create my mock?
-Go inside the folder resources, and create jsons with your routes following the layout of ```dummy_payload.json```,
-start the service and your routes can be accessed by: ```/mock/<your-path>```
+## How to manage my mocked routes?
+All mocks are stored inside the folder ```resoureces``` as json files, you can create your own mocks by hand following the layout of ```dummy_payload.json``` then restart the application and you routes should be working now, you can access them by running ```curl -x<GET, POST, PUT, DELETE> http://localhost:3001/mock/<your mocked path>```
 
 ## TODO
  - [x] use dotenv to define some settings of the project.
@@ -38,6 +37,6 @@ start the service and your routes can be accessed by: ```/mock/<your-path>```
  - [x] create a makefile to run everthing nice and smoothly.
  - [ ] cover project with tests.
  - [x] make everthing run inside a docker.
- - [ ] integrate tests with Jenkins and add test passing shield to README.
+ - [ ] integrate tests with Jenkins and add test passing badgets to README.
  - [ ] create a visual interface to edit mock responses.
  - [ ] profit???

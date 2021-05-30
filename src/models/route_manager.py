@@ -1,11 +1,12 @@
 import json
-from os import listdir
+from os import listdir, remove
 from os.path import isfile, join
 from .route_data import RouteData
 
 class RouteManager():
 
     RESOURCES_PATH = "./resources"
+    JSON_EXTENTION = ".json"
 
     def __init__(self):
         self.load()
@@ -21,28 +22,40 @@ class RouteManager():
                 self.read_and_add_json_mock(file_name)
 
     def read_and_add_json_mock(self, file_name):
-        if file_name.endswith(".json"):
+        if file_name.endswith(RouteManager.JSON_EXTENTION):
             file_path = RouteManager.RESOURCES_PATH + "/" + file_name
             file = open(file_path, "r")
             file_body = json.loads(file.read())
             self.add_route_with_args(
-                file_body["route"],
+                file_body["path"],
                 file_body["method"],
                 file_body["response_payload"],
-                int(file_body["code_status"])
+                int(file_body["response_code"])
             )
 
-    def add_route_with_args(self, path, method, response_payload={}, response_code=200):
-        self.add_new_route(RouteData(path, method, response_payload, response_code))
+    def save_new_json_mock(self, route):
+        new_file = open(RouteManager.RESOURCES_PATH + route.path + RouteManager.JSON_EXTENTION, "x")
+        raw_json = json.JSONEncoder().encode(route.__dict__)
+        print(raw_json)
+        new_file.write(raw_json)
+        new_file.close()
+
+
+    def add_route_with_args(self, path, method, response_payload={}, response_code=200, is_a_new_route=False):
+        route = RouteData(path, method, response_payload, response_code)
+        if (is_a_new_route):
+            self.save_new_json_mock(route)
+        self.add_new_route(route)
 
     def add_new_route(self, new_route):
-        self.routes[new_route.path] = new_route
+        self.routes[new_route.path[1:]] = new_route
 
     def has_route(self, path):
         return path in self.routes
 
     def remove_route(self, path):
         self.routes.pop(path)
+        remove(RouteManager.RESOURCES_PATH + "/" + path + RouteManager.JSON_EXTENTION)
 
     def mock_for_path(self, path, method, params={}, body={}):
         if self.route_exists(path):
@@ -63,10 +76,11 @@ class RouteManager():
             dump.append(route.__dict__)
         return dump
 
-        return json.dumps(self.routes)
-
     def route_exists(self, path):
-        return path in self.routes
+        paths = []
+        for route in self.routes.keys():
+            paths.append(route)
+        return path in paths
 
     def route_not_found(self):
-        return self.routes["/404"]
+        return self.routes["404"]

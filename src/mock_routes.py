@@ -5,10 +5,6 @@ from .models.route_data import RouteData
 
 manager = RouteManager()
 
-@app.route('/hi-there')
-def welcome():
-    return "hello! you can access your mock routes by using /mocks/<your-sub-path>"
-
 @app.route('/routes', methods=['GET'])
 def all_routes():
     response_payload = { "routes": manager.all_raw_routes() }
@@ -43,7 +39,7 @@ def create_route():
     response_code = body['response_code']
 
     try:
-        manager.add_new_route(RouteData(path, method, response_payload, response_code))
+        manager.add_route_with_args(path, method, response_payload, response_code, True)
     except TypeError as e:
         return str(e)
 
@@ -52,10 +48,9 @@ def create_route():
 
 @app.route("/route/<route_name>", methods=['DELETE'])
 def delete_route_by_name(route_name):
-    route = '/' + route_name
-    if not(manager.has_route(route)):
+    if not(manager.has_route(route_name)):
         return make_response('route not found', 404)
-    manager.remove_route(route)
+    manager.remove_route(route_name)
     # manager.reload()
     return make_response('', 204)
 
@@ -64,10 +59,6 @@ def delete_route_by_name(route_name):
 def handle_mocked_route(subpath):
     route_data = manager.mock_for_path(subpath, request.method, request.data, request.args)
     return make_response(route_data.response_payload, route_data.response_code)
-
-@app.route('/wellcome')
-def welcome():
-    return "hello! you can access your mocked routes by using /mocks/<your-sub-path>"
 
 @app.errorhandler(404)
 def not_a_mock(path):
