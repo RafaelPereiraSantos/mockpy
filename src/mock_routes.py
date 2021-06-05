@@ -1,9 +1,9 @@
 from . import app
 from flask import make_response, request
-from .models.route_manager import RouteManager
+from .models.route_service import RouteService
 from .models.route_data import RouteData
 
-manager = RouteManager()
+manager = RouteService()
 
 @app.route('/routes', methods=['GET'])
 def all_routes():

@@ -1,11 +1,11 @@
 # mockpy
 
-A simple setup to mock your requests
+A simple setup to mock APIs responses
 
 ## Dependences
 This application dependes on python3 installed on your machine and the required libraries can be found inside the file ```requirements.txt``` in the root of the project
 
-If you do not have python insalled on your machine, check the offical documentation https://www.python.org/downloads/ for more details on how install python, if you prefer, you can also use a docker containers to run this application, take a look on the section ```Working with docker```
+If you do not have python insalled on your machine, check the offical documentation https://www.python.org/downloads/ for more details on how install python, if you prefer, you can also use a docker containers to run this application, take a look at the section ```Working with docker```
 
 With python on your machine, install all dependecies running:
 ```make install``` or ```python3 -m pip install --upgrade -r requirements.txt```
@@ -17,7 +17,7 @@ With python on your machine, install all dependecies running:
 ```make run``` or ```python3 main.py```
 
 ## Working with docker
-This applicaiton already contains a docker file and a set of ```make``` commands to run this applicaiton on your machine without the need of installing python locally, all you need is docker installed, if you don't have docker installed, please take a look on the official documentation https://docs.docker.com/engine/install/ about how to  install
+This applicaiton already contains a docker file and a set of ```make``` commands to run this applicaiton on your machine without the need of installing python locally, all you need is docker installed, if you don't have docker installed, please take a look at the official documentation https://docs.docker.com/engine/install/ about how to  install
 
 ### How to build my docker image?
 ```make build-image``` or ```docker build -t mockpy .```
@@ -34,9 +34,11 @@ All mocks are stored inside the folder ```resoureces``` as json files, you can c
 ## TODO
  - [x] use dotenv to define some settings of the project.
  - [x] use JSON files to store the mock reponses.
+ - [ ] add the possibility of delay to mocked responses
  - [x] create a makefile to run everthing nice and smoothly.
  - [ ] cover project with tests.
  - [x] make everthing run inside a docker.
- - [ ] integrate tests with Jenkins and add test passing badgets to README.
+ - [ ] integrate tests with Travis and add test passing badgets to README.
  - [ ] create a visual interface to edit mock responses.
+ - [ ] add multilanguage feature for APIs responses and UI interface
  - [ ] profit???

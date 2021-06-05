@@ -9,5 +9,4 @@ RUN cp .env-template .env
 
 EXPOSE 3001:3001
 
-
 CMD [ "python3", "./main.py" ]

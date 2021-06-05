@@ -3,7 +3,7 @@ from os import listdir, remove
 from os.path import isfile, join
 from .route_data import RouteData
 
-class RouteManager():
+class RouteService():
 
     RESOURCES_PATH = "./resources"
     JSON_EXTENTION = ".json"
@@ -16,14 +16,14 @@ class RouteManager():
 
     def load(self):
         self.routes = {}
-        path = RouteManager.RESOURCES_PATH
+        path = RouteService.RESOURCES_PATH
         for file_name in listdir(path):
             if isfile(join(path, file_name)):
                 self.read_and_add_json_mock(file_name)
 
     def read_and_add_json_mock(self, file_name):
-        if file_name.endswith(RouteManager.JSON_EXTENTION):
-            file_path = RouteManager.RESOURCES_PATH + "/" + file_name
+        if file_name.endswith(RouteService.JSON_EXTENTION):
+            file_path = RouteService.RESOURCES_PATH + "/" + file_name
             file = open(file_path, "r")
             file_body = json.loads(file.read())
             self.add_route_with_args(
@@ -34,7 +34,7 @@ class RouteManager():
             )
 
     def save_new_json_mock(self, route):
-        new_file = open(RouteManager.RESOURCES_PATH + route.path + RouteManager.JSON_EXTENTION, "x")
+        new_file = open(RouteService.RESOURCES_PATH + route.path + RouteService.JSON_EXTENTION, "x")
         raw_json = json.JSONEncoder().encode(route.__dict__)
         print(raw_json)
         new_file.write(raw_json)
@@ -55,7 +55,7 @@ class RouteManager():
 
     def remove_route(self, path):
         self.routes.pop(path)
-        remove(RouteManager.RESOURCES_PATH + "/" + path + RouteManager.JSON_EXTENTION)
+        remove(RouteService.RESOURCES_PATH + "/" + path + RouteService.JSON_EXTENTION)
 
     def mock_for_path(self, path, method, params={}, body={}):
         if self.route_exists(path):
