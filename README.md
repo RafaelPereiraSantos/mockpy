@@ -29,7 +29,12 @@ This applicaiton already contains a docker file and a set of ```make``` commands
 ```make stop-container``` or ```docker stop mockpy_instance```
 
 ## How to manage my mocked routes?
+
+### By hand way
 All mocks are stored inside the folder ```resoureces``` as json files, you can create your own mocks by hand following the layout of ```dummy_payload.json``` then restart the application and you routes should be working now, you can access them by running ```curl -x<GET, POST, PUT, DELETE> http://localhost:3001/mock/<your mocked path>```
+
+### Using UI interface
+You can also access the UI present in the project in order to edit your mocked routes by accessing ```http://localhost:3001/```
 
 ## TODO
  - [x] use dotenv to define some settings of the project.
