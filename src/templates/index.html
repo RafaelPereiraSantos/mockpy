@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <title></title>
+
+  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/styles.css') }}">
+  <!-- <link rel= "stylesheet" type= "text/css" href= "styles.css"> -->
+
+</head>
+
+<body>
+  <div class="body-content">
+
+    <div class="left-panel">
+      <div class="left-panel-content">
+
+      <form id="route-form">
+
+        <div class="form-content">
+
+          <div class="form-item">
+
+            <div class="form-item-label">
+              <label for="path">Path:</label>
+            </div>
+
+            <div class="form-item-field">
+              <input id="path" type="text" name="path">
+            </div>
+
+          </div>
+
+          <div class="form-item">
+
+            <div class="form-item-label">
+              <label for="method">Method:</label>
+            </div>
+
+            <div class="form-item-field">
+              <input id="method" type="text" name="method">
+            </div>
+
+          </div>
+
+          <div class="form-item">
+
+            <div class="form-item-label">
+              <label for="payload">Response payload:</label>
+            </div>
+
+            <div class="form-item-field">
+              <input id="payload" type="text" name="payload">
+            </div>
+
+          </div>
+
+          <div class="form-item">
+
+            <div class="form-item-label">
+              <label for="code">Response code status:</label>
+            </div>
+
+            <div class="form-item-field">
+              <input id="code" type="text" name="code">
+            </div>
+
+          </div>
+
+          <div class="form-item">
+            <div class="form-item-content-buttons">
+              <div class="form-item-button">
+                <input type="submit" value="Save">
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </form>
+
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <div class="right-panel-content" id="routes-list">
+        <div class="right-panel-content-item">
+          POST /teste123
+        </div>
+
+        <div class="right-panel-content-item">
+          POST /teste123
+        </div>
+
+        <div class="right-panel-content-item">
+          POST /teste123
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+
+</html>
+
+<script>
+
+  const getElementById = (id) => document.getElementById(id);
+
+  const urlRoute = 'http://localhost:3001';
+  const routeList = getElementById('routes-list');
+  const defaultHeaders = { 'Content-Type': 'application/json' }
+  const pathInput = getElementById('path');
+  const methodInput = getElementById('method');
+  const payloadInput = getElementById('payload');
+  const codeStatusInput = getElementById('code');
+
+  const handleResponse = (resp) => resp.json();
+
+  const reloadMockList = async () => {
+    routeList.innerHTML = '';
+    const contentItem = (method, route) =>
+      `<div class="right-panel-content-item"><a href='${route}'>${method} ${route}</a></div>`;
+    const url = urlRoute + '/routes';
+
+    const handleData = (data) => {
+      const routes = data.routes;
+      var itemHtml = '';
+      routes.forEach((route, index) => {
+        itemHtml += contentItem(route.method, route.path);
+      });
+      routeList.innerHTML = itemHtml;
+    }
+
+    return await fetch(url, {
+          method: 'GET',
+          headers: defaultHeaders
+        }
+      )
+    .then(handleResponse)
+    .then(handleData);
+
+  }
+
+  const processForm = async (form) => {
+    const formData = new FormData(form);
+    const data = (k) => formData.get(k);
+
+    const payload = {
+      path: data('path'),
+      method: data('method'),
+      response_payload: data('payload'),
+      response_code: data('code')
+    };
+
+    if (payload.path.length === 0) {
+      alert("missing path");
+      return
+    }
+
+    if (payload.method.length === 0) {
+      alert("missing method");
+      return
+    }
+
+    if (payload.response_code.length === 0) {
+      alert("missing code status");
+      return
+    }
+
+    const url = urlRoute + '/routes';
+
+    const handleData = (data) => {
+      console.log(data);
+      reloadMockList();
+    }
+
+    return await fetch(url, {
+          method: 'POST',
+          headers: defaultHeaders,
+          body: JSON.stringify(payload)
+        }
+      )
+    .then(handleResponse)
+    .then(handleData);
+  }
+
+  const fillForm = async (routePath) => {
+    const handleData = (data) => {
+      pathInput.value = data.path;
+      methodInput.value = data.method;
+      payloadInput.value = JSON.stringify(data.response_payload);
+      codeStatusInput.value =  data.response_code;
+      console.log(data.path);
+    }
+
+    const url = urlRoute + '/routes/' + routePath;
+
+    return await fetch(url, {
+          method: 'GET',
+          headers: defaultHeaders,
+        }
+      )
+    .then(handleResponse)
+    .then(handleData);
+  }
+
+  const addEventsToForm = (form) => {
+    const processFormEvent = (e) => {
+      if (e.preventDefault) e.preventDefault();
+      processForm(form);
+      return false;
+    };
+
+    if (form.attachEvent) {
+      form.attachEvent('submit', processFormEvent);
+    } else {
+      form.addEventListener('submit', processFormEvent);
+    }
+  }
+
+  const addEventsToLinks = () => {
+    document.addEventListener(`click`, e => {
+      const origin = e.target.closest("a");
+      if (e.preventDefault) e.preventDefault();
+      if (origin) fillForm(origin.href.replace('file:///', ''));
+    });
+  }
+
+  const formId = 'route-form'
+  const form = document.getElementById(formId)
+
+  addEventsToForm(form);
+  addEventsToLinks();
+
+  reloadMockList();
+
+</script>

@@ -1,5 +1,5 @@
 from . import app
-from flask import make_response, request
+from flask import make_response, request, render_template
 from .models.route_service import RouteService
 from .models.route_data import RouteData
 
@@ -10,14 +10,14 @@ def all_routes():
     response_payload = { "routes": manager.all_raw_routes() }
     return make_response(response_payload, 200)
 
-@app.route('/route/<route_path>', methods=['GET'])
+@app.route('/routes/<route_path>', methods=['GET'])
 def route_by_name(route_path):
     if not(manager.route_exists(route_path)):
         return route_not_found_error()
     response_payload = manager.raw_route(route_path)
     return make_response(response_payload, 200)
 
-@app.route('/route', methods=['POST'])
+@app.route('/routes', methods=['POST'])
 def create_route():
     body = request.json
 
@@ -49,7 +49,7 @@ def create_route():
         return error_message("oopsy, something really wrong just happend", 500)
 
     # manager.reload()
-    return make_response('', 201)
+    return make_response({ 'message': 'created' }, 201)
 
 @app.route("/route/<route_name>", methods=['DELETE'])
 def delete_route_by_name(route_name):
@@ -64,6 +64,10 @@ def delete_route_by_name(route_name):
 def handle_mocked_route(subpath):
     route_data = manager.mock_for_path(subpath, request.method, request.data, request.args)
     return make_response(route_data.response_payload, route_data.response_code)
+
+@app.route('/', methods=['GET'])
+def home():
+    return render_template('index.html')
 
 @app.errorhandler(404)
 def not_a_mock(path):
@@ -88,5 +92,6 @@ def invalid_method_error():
     return error_message('invalid HTTP method for route')
 
 def error_message(message, status_code=400):
+    print(message)
     return make_response({ 'message': message }, status_code)
 
