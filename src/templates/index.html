@@ -4,8 +4,8 @@
 
   <title></title>
 
-  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/styles.css') }}">
-  <!-- <link rel= "stylesheet" type= "text/css" href= "styles.css"> -->
+  <!-- <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/styles.css') }}"> -->
+  <link rel= "stylesheet" type= "text/css" href= "styles.css">
 
 </head>
 
@@ -37,8 +37,67 @@
               <label for="method">Method:</label>
             </div>
 
-            <div class="form-item-field">
-              <input id="method" type="text" name="method">
+            <div class="form-item-method-input-content">
+              <div class="form-item-method-input-content-radio">
+                <input type="radio" name="method" value="get">
+              </div>
+              <div class="form-item-method-input-content-text">GET</div>
+            </div>
+
+            <div class="form-item-method-input-content">
+              <div class="form-item-method-input-content-radio">
+                <input type="radio" name="method" value="head">
+              </div>
+              <div class="form-item-method-input-content-text">HEAD</div>
+            </div>
+
+            <div class="form-item-method-input-content">
+              <div class="form-item-method-input-content-radio">
+                <input type="radio" name="method" value="post">
+              </div>
+              <div class="form-item-method-input-content-text">POST</div>
+            </div>
+
+            <div class="form-item-method-input-content">
+              <div class="form-item-method-input-content-radio">
+                <input type="radio" name="method" value="put">
+              </div>
+              <div class="form-item-method-input-content-text">PUT</div>
+            </div>
+
+            <div class="form-item-method-input-content">
+              <div class="form-item-method-input-content-radio">
+                <input type="radio" name="method" value="delete">
+              </div>
+              <div class="form-item-method-input-content-text">GET</div>
+            </div>
+
+            <div class="form-item-method-input-content">
+              <div class="form-item-method-input-content-radio">
+                <input type="radio" name="method" value="connect">
+              </div>
+              <div class="form-item-method-input-content-text">CONNECT</div>
+            </div>
+
+            <div class="form-item-method-input-content">
+              <div class="form-item-method-input-content-radio">
+                <input type="radio" name="method" value="options">
+              </div>
+              <div class="form-item-method-input-content-text">OPTIONS</div>
+            </div>
+
+            <div class="form-item-method-input-content">
+              <div class="form-item-method-input-content-radio">
+                <input type="radio" name="method" value="trace">
+              </div>
+              <div class="form-item-method-input-content-text">TRACE</div>
+            </div>
+
+            <div class="form-item-method-input-content">
+              <div class="form-item-method-input-content-radio">
+                <input type="radio" name="method" value="patch">
+              </div>
+              <div class="form-item-method-input-content-text">PATCH</div>
             </div>
 
           </div>
@@ -84,17 +143,6 @@
 
     <div class="right-panel">
       <div class="right-panel-content" id="routes-list">
-        <div class="right-panel-content-item">
-          POST /teste123
-        </div>
-
-        <div class="right-panel-content-item">
-          POST /teste123
-        </div>
-
-        <div class="right-panel-content-item">
-          POST /teste123
-        </div>
       </div>
     </div>
 
@@ -120,7 +168,18 @@
   const reloadMockList = async () => {
     routeList.innerHTML = '';
     const contentItem = (method, route) =>
-      `<div class="right-panel-content-item"><a href='${route}'>${method} ${route}</a></div>`;
+      `<div class="right-panel-content-item">
+        <div class="right-panel-content-item-method">
+          <div class="right-panel-content-item-method-content">
+            ${method}
+          </div>
+        </div>
+        <div class="right-panel-content-item-url" id="path:${route}">
+          <div class="right-panel-content-item-url-content" id="path:${route}">
+            ${route}
+          </div>
+        </div>
+      </div>`;
     const url = urlRoute + '/routes';
 
     const handleData = (data) => {
@@ -220,10 +279,12 @@
   }
 
   const addEventsToLinks = () => {
-    document.addEventListener(`click`, e => {
-      const origin = e.target.closest("a");
-      if (e.preventDefault) e.preventDefault();
-      if (origin) fillForm(origin.href.replace('file:///', ''));
+    document.addEventListener('click', e => {
+      const targetId = e.target.id;
+      if (targetId.startsWith('path:')) {
+        if (e.preventDefault) e.preventDefault();
+        fillForm(targetId.replace('path:/', ''));
+      }
     });
   }
 
