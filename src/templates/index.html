@@ -14,6 +14,26 @@
 
     <div class="left-panel">
       <div class="left-panel-content">
+        <div class="payload-panel">
+          <div class="payload-panel-content">
+            <div class="payload-panel-content-title">
+              <div class="payload-panel-content-title-content">
+                Payload
+              </div>
+            </div>
+            <div class="payload-panel-content-textarea">
+              <form id="secondary-form">
+                <textarea id="payload" name="payload">
+                </textarea>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="middle-panel">
+      <div class="middle-panel-content">
 
       <form id="route-form">
 
@@ -39,77 +59,65 @@
 
             <div class="form-item-method-input-content">
               <div class="form-item-method-input-content-radio">
-                <input type="radio" name="method" value="get">
+                <input type="radio" name="method" value="GET" id="GET">
               </div>
               <div class="form-item-method-input-content-text">GET</div>
             </div>
 
             <div class="form-item-method-input-content">
               <div class="form-item-method-input-content-radio">
-                <input type="radio" name="method" value="head">
+                <input type="radio" name="method" value="HEAD" id="HEAD">
               </div>
               <div class="form-item-method-input-content-text">HEAD</div>
             </div>
 
             <div class="form-item-method-input-content">
               <div class="form-item-method-input-content-radio">
-                <input type="radio" name="method" value="post">
+                <input type="radio" name="method" value="POST" id="POST">
               </div>
               <div class="form-item-method-input-content-text">POST</div>
             </div>
 
             <div class="form-item-method-input-content">
               <div class="form-item-method-input-content-radio">
-                <input type="radio" name="method" value="put">
+                <input type="radio" name="method" value="PUT" id="PUT">
               </div>
               <div class="form-item-method-input-content-text">PUT</div>
             </div>
 
             <div class="form-item-method-input-content">
               <div class="form-item-method-input-content-radio">
-                <input type="radio" name="method" value="delete">
+                <input type="radio" name="method" value="DELETE" id="DELETE">
               </div>
-              <div class="form-item-method-input-content-text">GET</div>
+              <div class="form-item-method-input-content-text">DELETE</div>
             </div>
 
             <div class="form-item-method-input-content">
               <div class="form-item-method-input-content-radio">
-                <input type="radio" name="method" value="connect">
+                <input type="radio" name="method" value="CONNECT" id="CONNECT">
               </div>
               <div class="form-item-method-input-content-text">CONNECT</div>
             </div>
 
             <div class="form-item-method-input-content">
               <div class="form-item-method-input-content-radio">
-                <input type="radio" name="method" value="options">
+                <input type="radio" name="method" value="OPTIONS" id="OPTIONS">
               </div>
               <div class="form-item-method-input-content-text">OPTIONS</div>
             </div>
 
             <div class="form-item-method-input-content">
               <div class="form-item-method-input-content-radio">
-                <input type="radio" name="method" value="trace">
+                <input type="radio" name="method" value="TRACE" id="TRACE">
               </div>
               <div class="form-item-method-input-content-text">TRACE</div>
             </div>
 
             <div class="form-item-method-input-content">
               <div class="form-item-method-input-content-radio">
-                <input type="radio" name="method" value="patch">
+                <input type="radio" name="method" value="PATCH" id="PATCH">
               </div>
               <div class="form-item-method-input-content-text">PATCH</div>
-            </div>
-
-          </div>
-
-          <div class="form-item">
-
-            <div class="form-item-label">
-              <label for="payload">Response payload:</label>
-            </div>
-
-            <div class="form-item-field">
-              <input id="payload" type="text" name="payload">
             </div>
 
           </div>
@@ -201,9 +209,10 @@
 
   }
 
-  const processForm = async (form) => {
-    const formData = new FormData(form);
-    const data = (k) => formData.get(k);
+  const processForm = async (mainForm, secondaryForm) => {
+    const mainFormData = new FormData(mainForm);
+    const payloadFormData = new FormData(secondaryForm);
+    const data = (k) => mainFormData.get(k) || payloadFormData.get(k);
 
     const payload = {
       path: data('path'),
@@ -229,10 +238,7 @@
 
     const url = urlRoute + '/routes';
 
-    const handleData = (data) => {
-      console.log(data);
-      reloadMockList();
-    }
+    const handleData = (data) => { reloadMockList(); }
 
     return await fetch(url, {
           method: 'POST',
@@ -247,7 +253,7 @@
   const fillForm = async (routePath) => {
     const handleData = (data) => {
       pathInput.value = data.path;
-      methodInput.value = data.method;
+      document.getElementById(data.method).checked = true;
       payloadInput.value = JSON.stringify(data.response_payload);
       codeStatusInput.value =  data.response_code;
       console.log(data.path);
@@ -264,17 +270,17 @@
     .then(handleData);
   }
 
-  const addEventsToForm = (form) => {
+  const addEventsToForm = (mainForm, secondaryForm) => {
     const processFormEvent = (e) => {
       if (e.preventDefault) e.preventDefault();
-      processForm(form);
+      processForm(mainForm, secondaryForm);
       return false;
     };
 
-    if (form.attachEvent) {
-      form.attachEvent('submit', processFormEvent);
+    if (mainForm.attachEvent) {
+      mainForm.attachEvent('submit', processFormEvent);
     } else {
-      form.addEventListener('submit', processFormEvent);
+      mainForm.addEventListener('submit', processFormEvent);
     }
   }
 
@@ -288,10 +294,13 @@
     });
   }
 
-  const formId = 'route-form'
-  const form = document.getElementById(formId)
+  const mainFormId = 'route-form'
+  const secondaryFormId = 'secondary-form'
 
-  addEventsToForm(form);
+  const mainForm = document.getElementById(mainFormId)
+  const secondaryForm = document.getElementById(secondaryFormId)
+
+  addEventsToForm(mainForm, secondaryForm);
   addEventsToLinks();
 
   reloadMockList();
